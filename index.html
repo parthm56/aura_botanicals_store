@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aura Botanicals | Pure Essence</title>
+    
+    <!-- Fonts: Playfair Display (Serif) and Lato (Sans) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Phosphor Icons (Minimalist Icons) -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <!-- Custom Configuration for Earthy Palette -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'aura-cream': '#F9F8F6',
+                        'aura-stone': '#EBE9E4',
+                        'aura-charcoal': '#2C2C2C',
+                        'aura-terra': '#C28E78',
+                        'aura-sage': '#94A391',
+                        'aura-dark-green': '#4A5D4F',
+                    },
+                    fontFamily: {
+                        serif: ['"Playfair Display"', 'serif'],
+                        sans: ['"Lato"', 'sans-serif'],
+                    },
+                    animation: {
+                        'fade-in-up': 'fadeInUp 0.8s ease-out forwards',
+                        'fade-in': 'fadeIn 1s ease-out forwards',
+                    },
+                    keyframes: {
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #F9F8F6;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #D6D3CD;
+            border-radius: 3px;
+        }
+        
+        /* Loader */
+        .loader-overlay {
+            position: fixed;
+            inset: 0;
+            background: #F9F8F6;
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.5s ease;
+        }
+        
+        /* Image Hover Zoom Effect */
+        .img-zoom-container {
+            overflow: hidden;
+        }
+        .img-zoom-container img {
+            transition: transform 0.7s ease;
+        }
+        .group:hover .img-zoom-container img {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body class="bg-aura-cream text-aura-charcoal font-sans antialiased selection:bg-aura-terra selection:text-white">
+
+    <!-- Loading Screen -->
+    <div id="loader" class="loader-overlay">
+        <div class="font-serif text-2xl italic text-aura-charcoal animate-pulse">Aura.</div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 transition-all duration-300" id="navbar">
+        <div class="max-w-7xl mx-auto px-6 py-6 flex justify-between items-center">
+            
+            <!-- Mobile Menu Button -->
+            <button onclick="toggleMobileMenu()" class="md:hidden text-2xl hover:text-aura-terra transition-colors">
+                <i class="ph ph-list"></i>
+            </button>
+
+            <!-- Desktop Links (Left) -->
+            <div class="hidden md:flex space-x-8 text-sm uppercase tracking-widest font-light">
+                <a href="#shop" class="hover:text-aura-terra transition-colors relative group">
+                    Shop
+                    <span class="absolute -bottom-1 left-0 w-0 h-px bg-aura-terra transition-all duration-300 group-hover:w-full"></span>
+                </a>
+                <a href="#about" class="hover:text-aura-terra transition-colors relative group">
+                    About
+                    <span class="absolute -bottom-1 left-0 w-0 h-px bg-aura-terra transition-all duration-300 group-hover:w-full"></span>
+                </a>
+                <a href="#journal" class="hover:text-aura-terra transition-colors relative group">
+                    Journal
+                    <span class="absolute -bottom-1 left-0 w-0 h-px bg-aura-terra transition-all duration-300 group-hover:w-full"></span>
+                </a>
+            </div>
+
+            <!-- Logo (Center) -->
+            <a href="#" class="text-2xl md:text-3xl font-serif font-medium tracking-tight absolute left-1/2 transform -translate-x-1/2 cursor-pointer">
+                Aura.
+            </a>
+
+            <!-- Icons (Right) -->
+            <div class="flex items-center space-x-6">
+                <button class="hover:text-aura-terra transition-colors text-xl">
+                    <i class="ph ph-magnifying-glass"></i>
+                </button>
+                <button class="hover:text-aura-terra transition-colors text-xl hidden sm:block">
+                    <i class="ph ph-user"></i>
+                </button>
+                <button class="hover:text-aura-terra transition-colors text-xl relative" onclick="openCart()">
+                    <i class="ph ph-shopping-bag"></i>
+                    <span id="cart-badge" class="absolute -top-1 -right-2 bg-aura-terra text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full opacity-0 transition-opacity duration-300">0</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Overlay -->
+        <div id="mobile-menu" class="fixed inset-0 bg-aura-cream z-40 transform -translate-x-full transition-transform duration-500 flex flex-col justify-center items-center space-y-8 md:hidden">
+            <button onclick="toggleMobileMenu()" class="absolute top-6 left-6 text-2xl">
+                <i class="ph ph-x"></i>
+            </button>
+            <a href="#shop" onclick="toggleMobileMenu()" class="text-2xl font-serif hover:text-aura-terra">Shop Collection</a>
+            <a href="#about" onclick="toggleMobileMenu()" class="text-2xl font-serif hover:text-aura-terra">Our Story</a>
+            <a href="#journal" onclick="toggleMobileMenu()" class="text-2xl font-serif hover:text-aura-terra">The Journal</a>
+            <a href="#" onclick="toggleMobileMenu()" class="text-xl font-light text-gray-500">Login</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="relative h-screen w-full overflow-hidden flex items-center justify-center">
+        <!-- Background Image with slight overlay -->
+        <div class="absolute inset-0 z-0">
+            <img src="https://images.unsplash.com/photo-1616394584738-fc6e612e71b9?q=80&w=2070&auto=format&fit=crop" 
+                 alt="Minimalist Essential Oils" 
+                 class="w-full h-full object-cover object-center opacity-90">
+            <div class="absolute inset-0 bg-black/10"></div> <!-- Subtle dark tint for text contrast -->
+        </div>
+
+        <!-- Content -->
+        <div class="relative z-10 text-center px-4 animate-fade-in-up">
+            <span class="block text-white/90 text-sm md:text-base uppercase tracking-[0.3em] mb-4">Pure Botanical Essence</span>
+            <h1 class="text-4xl md:text-6xl lg:text-7xl font-serif text-white mb-8 leading-tight">
+                Nature, Distilled <br> into Ritual.
+            </h1>
+            <a href="#shop" class="inline-block border border-white text-white px-8 py-3 md:px-10 md:py-4 text-sm uppercase tracking-widest hover:bg-white hover:text-aura-charcoal transition-all duration-300 ease-out">
+                Shop the Collection
+            </a>
+        </div>
+        
+        <!-- Scroll Indicator -->
+        <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-white/70 animate-bounce">
+            <i class="ph ph-arrow-down text-2xl"></i>
+        </div>
+    </header>
+
+    <!-- Value Props (Subtle) -->
+    <section class="py-12 border-b border-aura-stone/50 bg-aura-cream">
+        <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+            <div class="space-y-2">
+                <p class="font-serif text-lg italic text-aura-dark-green">Ethically Sourced</p>
+                <p class="text-xs text-gray-500 tracking-wide">FROM CERTIFIED GROWERS</p>
+            </div>
+            <div class="space-y-2">
+                <p class="font-serif text-lg italic text-aura-dark-green">Small Batch</p>
+                <p class="text-xs text-gray-500 tracking-wide">HAND BLENDED WEEKLY</p>
+            </div>
+            <div class="space-y-2">
+                <p class="font-serif text-lg italic text-aura-dark-green">Zero Waste</p>
+                <p class="text-xs text-gray-500 tracking-wide">RECYCLABLE PACKAGING</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Product Grid Section -->
+    <section id="shop" class="py-24 bg-aura-cream">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-12">
+                <div>
+                    <h2 class="text-3xl md:text-4xl font-serif text-aura-charcoal mb-3">Curated Essentials</h2>
+                    <p class="text-gray-500 font-light">Our best-selling formulations for home and body.</p>
+                </div>
+                <a href="#" class="hidden md:block text-sm border-b border-aura-charcoal pb-1 hover:text-aura-terra hover:border-aura-terra transition-colors">View All Products</a>
+            </div>
+
+            <!-- Grid -->
+            <div id="product-grid" class="grid grid-cols-1 md:grid-cols-3 gap-x-8 gap-y-12">
+                <!-- Products will be injected here by JS -->
+            </div>
+
+            <div class="mt-12 text-center md:hidden">
+                <a href="#" class="text-sm border-b border-aura-charcoal pb-1 hover:text-aura-terra">View All Products</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Editorial Split Section -->
+    <section id="about" class="py-12 md:py-0">
+        <div class="grid grid-cols-1 md:grid-cols-2 min-h-[600px]">
+            <div class="relative h-96 md:h-auto bg-aura-stone overflow-hidden">
+                <img src="https://images.unsplash.com/photo-1556228852-6d35a585d566?q=80&w=1887&auto=format&fit=crop" 
+                     alt="Woman applying oil" 
+                     class="absolute inset-0 w-full h-full object-cover hover:scale-105 transition-transform duration-[2s]">
+            </div>
+            <div class="bg-[#F2F0EC] flex flex-col justify-center items-start px-8 md:px-20 py-16">
+                <span class="text-aura-terra text-xs font-bold tracking-widest uppercase mb-4">Our Philosophy</span>
+                <h3 class="text-3xl md:text-4xl font-serif mb-6 leading-snug">
+                    Mindful living through <br> botanical connection.
+                </h3>
+                <p class="text-gray-600 font-light leading-relaxed mb-8 max-w-md">
+                    We believe in the power of scent to ground the mind and elevate the spirit. Our oils are cold-pressed from the finest botanicals, ensuring that every drop carries the vital essence of the plant.
+                </p>
+                <a href="#" class="text-aura-charcoal border-b border-gray-300 hover:border-aura-charcoal transition-all pb-1 text-sm uppercase tracking-wider">Read our Story</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Newsletter -->
+    <section class="py-24 bg-aura-dark-green text-aura-cream text-center px-6">
+        <div class="max-w-xl mx-auto">
+            <i class="ph ph-plant text-4xl mb-4 inline-block text-aura-sage"></i>
+            <h2 class="text-3xl font-serif mb-4">Join the Circle</h2>
+            <p class="font-light text-white/70 mb-8">Receive wellness rituals, early access to new batches, and 10% off your first order.</p>
+            
+            <form onsubmit="event.preventDefault(); showToast('Thank you for subscribing.');" class="flex flex-col md:flex-row gap-4">
+                <input type="email" placeholder="Your email address" required
+                       class="flex-1 bg-transparent border-b border-white/30 py-3 px-2 text-white placeholder-white/40 focus:outline-none focus:border-white transition-colors">
+                <button type="submit" class="bg-aura-cream text-aura-dark-green px-8 py-3 text-sm uppercase tracking-widest hover:bg-aura-terra hover:text-white transition-colors duration-300">
+                    Subscribe
+                </button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-aura-cream pt-20 pb-10 border-t border-aura-stone">
+        <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
+            <div class="md:col-span-1">
+                <a href="#" class="text-2xl font-serif block mb-6">Aura.</a>
+                <p class="text-xs text-gray-500 leading-relaxed">
+                    Premium small-batch essential oils for the modern minimalist home and body.
+                </p>
+            </div>
+            
+            <div>
+                <h4 class="text-sm font-bold uppercase tracking-widest mb-6 text-aura-charcoal">Shop</h4>
+                <ul class="space-y-4 text-sm text-gray-500 font-light">
+                    <li><a href="#" class="hover:text-aura-terra transition-colors">Essential Oils</a></li>
+                    <li><a href="#" class="hover:text-aura-terra transition-colors">Diffusers</a></li>
+                    <li><a href="#" class="hover:text-aura-terra transition-colors">Sets & Bundles</a></li>
+                    <li><a href="#" class="hover:text-aura-terra transition-colors">Gift Cards</a></li>
+                </ul>
+            </div>
+            
+            <div>
+                <h4 class="text-sm font-bold uppercase tracking-widest mb-6 text-aura-charcoal">Support</h4>
+                <ul class="space-y-4 text-sm text-gray-500 font-light">
+                    <li><a href="#" class="hover:text-aura-terra transition-colors">Shipping & Returns</a></li>
+                    <li><a href="#" class="hover:text-aura-terra transition-colors">FAQ</a></li>
+                    <li><a href="#" class="hover:text-aura-terra transition-colors">Contact Us</a></li>
+                    <li><a href="#" class="hover:text-aura-terra transition-colors">Sustainability</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="text-sm font-bold uppercase tracking-widest mb-6 text-aura-charcoal">Connect</h4>
+                <div class="flex space-x-4 text-xl text-gray-500">
+                    <a href="#" class="hover:text-aura-terra transition-colors"><i class="ph ph-instagram-logo"></i></a>
+                    <a href="#" class="hover:text-aura-terra transition-colors"><i class="ph ph-pinterest-logo"></i></a>
+                    <a href="#" class="hover:text-aura-terra transition-colors"><i class="ph ph-tiktok-logo"></i></a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="max-w-7xl mx-auto px-6 pt-8 border-t border-gray-200 flex flex-col md:flex-row justify-between items-center text-xs text-gray-400">
+            <p>&copy; 2023 Aura Botanicals. All rights reserved.</p>
+            <div class="flex space-x-6 mt-4 md:mt-0">
+                <a href="#" class="hover:text-gray-600">Privacy Policy</a>
+                <a href="#" class="hover:text-gray-600">Terms of Service</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-8 left-1/2 transform -translate-x-1/2 bg-aura-charcoal text-white px-6 py-3 rounded shadow-lg opacity-0 pointer-events-none transition-opacity duration-300 z-50 flex items-center space-x-3 min-w-[300px]">
+        <i class="ph ph-check-circle text-aura-sage text-xl"></i>
+        <span id="toast-message" class="text-sm font-light tracking-wide">Item added to cart</span>
+    </div>
+
+    <script>
+        // Product Data
+        const products = [
+            {
+                id: 1,
+                name: "Midnight Lavender",
+                tagline: "Sleep & Relaxation",
+                price: 32.00,
+                imageDefault: "https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?q=80&w=987&auto=format&fit=crop",
+                imageHover: "https://images.unsplash.com/photo-1596432757258-269107513746?q=80&w=1000&auto=format&fit=crop",
+                isNew: true
+            },
+            {
+                id: 2,
+                name: "Bergamot & Sage",
+                tagline: "Focus & Clarity",
+                price: 28.00,
+                imageDefault: "https://images.unsplash.com/photo-1608248597279-f99d160bfbc8?q=80&w=987&auto=format&fit=crop",
+                imageHover: "https://images.unsplash.com/photo-1611080626919-7cf5a9dbab5b?q=80&w=1000&auto=format&fit=crop",
+                isNew: false
+            },
+            {
+                id: 3,
+                name: "Rose Otto",
+                tagline: "Balance & Glow",
+                price: 45.00,
+                imageDefault: "https://images.unsplash.com/photo-1555665184-08dc29489c64?q=80&w=988&auto=format&fit=crop",
+                imageHover: "https://images.unsplash.com/photo-1615486390116-4c1b50007f18?q=80&w=1000&auto=format&fit=crop",
+                isNew: false
+            }
+        ];
+
+        // Render Products
+        const productGrid = document.getElementById('product-grid');
+        
+        products.forEach(product => {
+            const card = document.createElement('div');
+            card.className = 'group cursor-pointer';
+            card.innerHTML = `
+                <div class="relative overflow-hidden aspect-[3/4] bg-gray-100 mb-4">
+                    ${product.isNew ? '<span class="absolute top-4 left-4 bg-white/80 backdrop-blur-sm px-3 py-1 text-[10px] uppercase tracking-widest z-20">New Arrival</span>' : ''}
+                    
+                    <!-- Images -->
+                    <div class="relative w-full h-full">
+                        <img src="${product.imageDefault}" alt="${product.name}" class="absolute inset-0 w-full h-full object-cover transition-opacity duration-500 group-hover:opacity-0 z-10">
+                        <img src="${product.imageHover}" alt="${product.name} Alt" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 z-0">
+                    </div>
+
+                    <!-- Quick Add Button (Visible on Hover) -->
+                    <button onclick="addToCart('${product.name}')" class="absolute bottom-0 left-0 w-full bg-aura-charcoal text-white py-3 uppercase text-xs tracking-widest translate-y-full group-hover:translate-y-0 transition-transform duration-300 z-30 hover:bg-aura-terra">
+                        Quick Add - $${product.price.toFixed(2)}
+                    </button>
+                </div>
+                
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h3 class="font-serif text-lg text-aura-charcoal group-hover:text-aura-terra transition-colors">${product.name}</h3>
+                        <p class="text-xs text-gray-400 mt-1">${product.tagline}</p>
+                    </div>
+                    <span class="font-light text-sm">$${product.price.toFixed(2)}</span>
+                </div>
+            `;
+            productGrid.appendChild(card);
+        });
+
+        // Cart Logic
+        let cartCount = 0;
+        const cartBadge = document.getElementById('cart-badge');
+        const toast = document.getElementById('toast');
+        const toastMessage = document.getElementById('toast-message');
+
+        function addToCart(productName) {
+            // Update Count
+            cartCount++;
+            cartBadge.textContent = cartCount;
+            cartBadge.classList.remove('opacity-0');
+            
+            // Show Toast
+            showToast(`Added ${productName} to cart`);
+        }
+
+        let toastTimeout;
+        function showToast(message) {
+            toastMessage.textContent = message;
+            toast.classList.remove('opacity-0');
+            toast.classList.remove('translate-y-8');
+            
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toast.classList.add('opacity-0');
+            }, 3000);
+        }
+
+        // Navbar Scroll Effect
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('bg-white/90', 'backdrop-blur-md', 'shadow-sm', 'py-4');
+                navbar.classList.remove('py-6');
+            } else {
+                navbar.classList.remove('bg-white/90', 'backdrop-blur-md', 'shadow-sm', 'py-4');
+                navbar.classList.add('py-6');
+            }
+        });
+
+        // Mobile Menu
+        const mobileMenu = document.getElementById('mobile-menu');
+        function toggleMobileMenu() {
+            const isClosed = mobileMenu.classList.contains('-translate-x-full');
+            if (isClosed) {
+                mobileMenu.classList.remove('-translate-x-full');
+            } else {
+                mobileMenu.classList.add('-translate-x-full');
+            }
+        }
+
+        // Loading Animation
+        window.addEventListener('load', () => {
+            const loader = document.getElementById('loader');
+            setTimeout(() => {
+                loader.style.opacity = '0';
+                setTimeout(() => {
+                    loader.style.display = 'none';
+                }, 500);
+            }, 800);
+        });
+
+        function openCart() {
+            if(cartCount === 0) {
+                showToast('Your cart is currently empty.');
+            } else {
+                showToast('Opening cart checkout...');
+            }
+        }
+    </script>
+</body>
+</html>
